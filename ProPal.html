@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Project Order Form</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f8f9fd, #e0eafc);
+            color: #333;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Watermark Styling */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 150px;
+            font-family: 'Cursive', sans-serif;
+            color: rgba(0, 0, 0, 0.05);  /* Semi-transparent grey */
+            z-index: 0;  /* Ensure it stays behind content */
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;  /* Ensures content appears above watermark */
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            color: #333;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+            color: #555;
+        }
+
+        input, textarea {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 2px solid #e6e9ef;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 4px 10px rgba(0, 150, 136, 0.1);
+        }
+
+        button {
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        .price {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            color: #2c3e50;
+        }
+
+        .address-note {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        /* Additional Aesthetic Touches */
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .container h1 {
+            color: #3c4043;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .sample-image {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .sample-button {
+            background-color: #f0f0f0;
+            color: #555;
+            font-size: 14px;
+            padding: 10px 20px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sample-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .sample-button {
+                top: 10px;
+                right: 10px;
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+    <script>
+        // Worker pool array (example workers)
+        const workers = [
+            { name: 'Worker 1', wallet: 'worker1wallet@service.com' },
+            { name: 'Worker 2', wallet: 'worker2wallet@service.com' },
+            { name: 'Worker 3', wallet: 'worker3wallet@service.com' }
+        ];
+
+        let workerIndex = 0;  // Keep track of which worker should take the next task
+        let sameDayChargeAlerted = false;  // Keep track if same-day delivery alert was shown
+
+        function assignWorker() {
+            // Select the next available worker
+            const assignedWorker = workers[workerIndex];
+            workerIndex = (workerIndex + 1) % workers.length;  // Rotate among workers
+            console.log('Assigned to:', assignedWorker.name);
+
+            // In a real application, you'd send this info to the backend via API or form submission
+            return assignedWorker.wallet;
+        }
+
+        function calculatePrice() {
+            var pages = document.getElementById("pages").value;
+            var price;
+            var today = new Date().toISOString().split('T')[0]; // Current date in 'YYYY-MM-DD' format
+            var deadline = document.getElementById("deadline").value;
+
+            // Minimum pages check
+            if (pages < 5) {
+                alert("Minimum number of pages is 5.");
+                document.getElementById("pages").value = 5;
+                pages = 5;
+            }
+
+            // Base price calculation
+            if (pages >= 5 && pages <= 15) {
+                if (pages == 5) {
+                    price = 150;
+                } else if (pages == 15) {
+                    price = 400;
+                } else {
+                    // Interpolate price for number of pages between 5 and 15
+                    price = 150 + ((pages - 5) * (400 - 150) / (15 - 5));
+                }
+            } else if (pages > 15) {
+                // Calculate price for pages beyond 15: Add ₹20 per page beyond 15 pages
+                price = 400 + ((pages - 15) * 20);
+            }
+
+            // Check if the deadline is today for same-day rush charges
+            if (deadline === today && !sameDayChargeAlerted) {
+                price += 40;  // Add ₹40 for same-day delivery
+                sameDayChargeAlerted = true;  // Ensure alert is only shown once
+            }
+
+            // Add a fixed delivery charge
+            var deliveryCharge = 100;
+            price += deliveryCharge;
+
+            // Update price on page
+            document.getElementById("price").innerText = "Estimated Price: ₹" + Math.round(price);
+        }
+
+        function processPayment() {
+            var workerWallet = assignWorker();  // Assign worker dynamically
+            var customerName = document.getElementById("name").value;
+            var price = document.getElementById("price").innerText.split("₹")[1];
+
+            // Transfer 30% to your UPI ID and the rest to the worker
+            var ownerWallet = 'jyoti.shah93@okaxis'; // Your UPI ID
+            var ownerShare = price * 0.30;
+            var workerShare = price - ownerShare - 100; // Subtract delivery charge from worker's share
+
+            console.log(`Transfer ₹${ownerShare} to ${ownerWallet}`);
+            console.log(`Transfer ₹${workerShare} to ${workerWallet}`);
+
+            // In a real application, you'd pass this info to a backend system here
+
+            alert("Order successfully submitted!");
+
+            // Redirect to payment page
+            window.location.href = "payment_page.html";  // Redirect to payment options
+        }
+
+        function toggleSamples() {
+            var sampleSection = document.getElementById("sample-section");
+            if (sampleSection.classList.contains("hidden")) {
+                sampleSection.classList.remove("hidden");
+            } else {
+                sampleSection.classList.add("hidden");
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Watermark -->
+    <div class="watermark">ProPal</div>
+
+    <div class="container">
+        <h1>Order Your School Project</h1>
+        <form onsubmit="processPayment(); return false;">
+            <div class="form-section">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-section">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-section">
+                <label for="pages">Number of Pages</label>
+                <input type="number" id="pages" name="pages" min="5" value="5" oninput="calculatePrice()" required>
+            </div>
+
+            <div class="form-section">
+                <label for="topic">Project Topic</label>
+                <textarea id="topic" name="topic" rows="3" required></textarea>
+            </div>
+
+            <div class="form-section">
+                <label for="deadline">Project Deadline</label>
+                <input type="date" id="deadline" name="deadline" required oninput="calculatePrice()">
+            </div>
+
+            <div class="form-section">
+                <label for="address">Delivery Address</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+
+            <p class="price" id="price">Estimated Price: ₹150</p>
+
+            <button type="submit">Submit Order</button>
+        </form>
+
+        <!-- Sample button (lighter and to the right) -->
+        <button class="sample-button" onclick="toggleSamples()">View Sample</button>
+
+        <!-- Sample image section (initially hidden) -->
+        <div id="sample-section" class="hidden">
+            <img src="sample1.jpg" alt="Sample 1" class="sample-image">
+            <img src="sample2.jpg" alt="Sample 2" class="sample-image">
+            <img src="sample3.jpg" alt="Sample 3" class="sample-image">
+        </div>
+    </div>
+
+</body>
+</html>

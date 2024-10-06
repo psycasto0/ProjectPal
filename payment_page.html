@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - ProPal</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f8f9fd, #e0eafc);
+            color: #333;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Watermark Styling */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 150px;
+            font-family: 'Cursive', sans-serif;
+            color: rgba(0, 0, 0, 0.05);  /* Semi-transparent grey */
+            z-index: 0;  /* Ensure it stays behind content */
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;  /* Ensures content appears above watermark */
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+            color: #555;
+        }
+
+        select, input, button {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 2px solid #e6e9ef;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 4px 10px rgba(0, 150, 136, 0.1);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        .payment-method {
+            margin-bottom: 30px;
+        }
+
+        .order-summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .order-summary h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+        .order-summary p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+    <script>
+        // Function to retrieve order details from localStorage
+        function loadOrderDetails() {
+            const orderDetails = JSON.parse(localStorage.getItem('orderDetails'));
+            if (!orderDetails) {
+                alert("No order details found. Please place an order first.");
+                window.location.href = "order_form.html";  // Redirect to order form
+                return;
+            }
+
+            // Display order summary
+            document.getElementById('customerName').innerText = orderDetails.name;
+            document.getElementById('projectTopic').innerText = orderDetails.topic;
+            document.getElementById('numberOfPages').innerText = orderDetails.pages;
+            document.getElementById('price').innerText = "₹" + orderDetails.price;
+        }
+
+        function processPayment() {
+            // Retrieve order details
+            const orderDetails = JSON.parse(localStorage.getItem('orderDetails'));
+            if (!orderDetails) {
+                alert("No order details found. Please place an order first.");
+                window.location.href = "order_form.html";  // Redirect to order form
+                return;
+            }
+
+            // Get selected payment method
+            const paymentMethod = document.getElementById("paymentMethod").value;
+
+            // Get payment details based on selected method
+            let paymentInfo = {};
+            if (paymentMethod === "UPI") {
+                paymentInfo.upiId = document.getElementById("upiId").value;
+                if (!paymentInfo.upiId) {
+                    alert("Please enter your UPI ID.");
+                    return;
+                }
+            } else if (paymentMethod === "Credit/Debit Card") {
+                paymentInfo.cardNumber = document.getElementById("cardNumber").value;
+                paymentInfo.expiry = document.getElementById("expiry").value;
+                paymentInfo.cvv = document.getElementById("cvv").value;
+                if (!paymentInfo.cardNumber || !paymentInfo.expiry || !paymentInfo.cvv) {
+                    alert("Please fill in all card details.");
+                    return;
+                }
+            } else if (paymentMethod === "Net Banking") {
+                paymentInfo.bankName = document.getElementById("bankName").value;
+                if (!paymentInfo.bankName) {
+                    alert("Please enter your bank name.");
+                    return;
+                }
+            }
+
+            // Mock payment processing
+            alert("Payment Successful! Thank you for your order.");
+
+            // Here, you would typically send the payment and order details to your backend server for processing
+            // Example: Using fetch API to send data to the server
+            /*
+            fetch('your-backend-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    order: orderDetails,
+                    payment: paymentInfo
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Redirect to a confirmation page or display a success message
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            */
+
+            // Clear localStorage after payment
+            localStorage.removeItem('orderDetails');
+
+            // Redirect to a confirmation page (optional)
+            window.location.href = "confirmation.html";
+        }
+
+        function togglePaymentFields() {
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            document.getElementById("upiFields").style.display = paymentMethod === "UPI" ? "block" : "none";
+            document.getElementById("cardFields").style.display = paymentMethod === "Credit/Debit Card" ? "block" : "none";
+            document.getElementById("bankFields").style.display = paymentMethod === "Net Banking" ? "block" : "none";
+        }
+
+        window.onload = loadOrderDetails;
+    </script>
+</head>
+<body>
+
+    <!-- Watermark -->
+    <div class="watermark">ProPal</div>
+
+    <div class="container">
+        <h1>Payment</h1>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <p><strong>Customer Name:</strong> <span id="customerName"></span></p>
+            <p><strong>Project Topic:</strong> <span id="projectTopic"></span></p>
+            <p><strong>Number of Pages:</strong> <span id="numberOfPages"></span></p>
+            <p><strong>Total Price:</strong> <span id="price"></span></p>
+        </div>
+
+        <form onsubmit="processPayment(); return false;">
+            <label for="paymentMethod">Select Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" required onchange="togglePaymentFields()">
+                <option value="">--Select--</option>
+                <option value="UPI">UPI</option>
+                <option value="Credit/Debit Card">Credit/Debit Card</option>
+                <option value="Net Banking">Net Banking</option>
+            </select>
+
+            <!-- UPI Fields -->
+            <div id="upiFields" style="display:none;">
+                <label for="upiId">UPI ID:</label>
+                <input type="text" id="upiId" name="upiId" placeholder="e.g., example@upi" />
+            </div>
+
+            <!-- Credit/Debit Card Fields -->
+            <div id="cardFields" style="display:none;">
+                <label for="cardNumber">Card Number:</label>
+                <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" />
+                
+                <label for="expiry">Expiry Date:</label>
+                <input type="month" id="expiry" name="expiry" />
+                
+                <label for="cvv">CVV:</label>
+                <input type="password" id="cvv" name="cvv" placeholder="XXX" maxlength="3" />
+            </div>
+
+            <!-- Net Banking Fields -->
+            <div id="bankFields" style="display:none;">
+                <label for="bankName">Bank Name:</label>
+                <input type="text" id="bankName" name="bankName" placeholder="e.g., State Bank of India" />
+            </div>
+
+            <button type="submit">Pay Now</button>
+        </form>
+    </div>
+
+</body>
+</html>

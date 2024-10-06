@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fd;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        .order-details {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Order Confirmation</h1>
+        <p>Thank you for your order! Here are the details:</p>
+
+        <div class="order-details">
+            <p><strong>Name:</strong> <span id="customer-name"></span></p>
+            <p><strong>Email:</strong> <span id="customer-email"></span></p>
+            <p><strong>Project Topic:</strong> <span id="project-topic"></span></p>
+            <p><strong>Number of Pages:</strong> <span id="number-of-pages"></span></p>
+            <p><strong>Deadline:</strong> <span id="project-deadline"></span></p>
+            <p><strong>Delivery Address:</strong> <span id="delivery-address"></span></p>
+            <p><strong>Estimated Price:</strong> <span id="estimated-price"></span></p>
+        </div>
+
+        <p>We will contact you shortly to confirm your payment and project details.</p>
+        <p>Feel free to reach out to us if you have any questions!</p>
+
+        <div class="footer">
+            <p>Contact Us: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Assuming you have stored order details in localStorage from the previous page
+        document.getElementById("customer-name").innerText = localStorage.getItem("customerName");
+        document.getElementById("customer-email").innerText = localStorage.getItem("customerEmail");
+        document.getElementById("project-topic").innerText = localStorage.getItem("projectTopic");
+        document.getElementById("number-of-pages").innerText = localStorage.getItem("numberOfPages");
+        document.getElementById("project-deadline").innerText = localStorage.getItem("projectDeadline");
+        document.getElementById("delivery-address").innerText = localStorage.getItem("deliveryAddress");
+        document.getElementById("estimated-price").innerText = localStorage.getItem("estimatedPrice");
+    </script>
+</body>
+</html>
